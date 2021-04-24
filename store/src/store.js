@@ -1,16 +1,29 @@
 // store.js
 import React, { createContext, useReducer } from "react";
 
-const initialState = {};
+const initialState = { items: [] };
 const store = createContext(initialState);
 const { Provider } = store;
 
 const StateProvider = ({ children }) => {
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
-      case "addToCart":
-        const newState = { ...action.item };
-        return newState;
+      case "addItemToCart":
+        return {
+          ...state,
+          items: state.items.map((item) =>
+            item.id === action.item.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : action.item
+          ),
+        };
+        break;
+      case "getCartItemCount":
+        return state.items.length;
+        break;
+      case "getItemsInCart":
+        return state.items;
+        break;
       default:
         throw new Error();
     }
